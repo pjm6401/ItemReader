@@ -1,4 +1,4 @@
-package com.ILK.batch.Custom.Reader;
+package com.batch.Custom.Reader;
 
 
 import java.util.HashMap;
@@ -14,8 +14,8 @@ import org.springframework.batch.item.database.orm.JpaQueryProvider;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.util.ClassUtils;
 
-import com.ILK.batch.DTO.FromToDTO;
-import com.ILK.batch.Entity.AuthEntity;
+import com.batch.DTO.FromToDTO;
+import com.batch.Entity.AuthEntity;
 
 
 
