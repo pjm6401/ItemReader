@@ -1,5 +1,5 @@
-# 🚀Spring Batch JpaItemReader Custom
-Index 와 Limit 의 성능이슈를 해결하기위한 ItemReader Custom 코드입니다.
+# 🚀 Spring Batch JpaItemReader Custom
+Index 와 Limit 의 성능이슈를 해결하기위한 ItemReader Custom 예시 코드입니다.
 <!--
 **pjm6401/pjm6401** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
