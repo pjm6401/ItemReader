@@ -1,5 +1,6 @@
 # 🚀 Spring Batch JpaItemReader Custom
 Index 와 Limit 의 성능이슈를 해결하기위한 ItemReader Custom 예시 코드입니다.
+Select 코드 부분에 Zero Offset 적용해주시면 됩니다. 적용 방법의 경우 각자 맞는 방법을 채택하면 됩니다 (파라미터 전달, 하드코딩 등)
 <!--
 **pjm6401/pjm6401** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
