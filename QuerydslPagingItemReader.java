@@ -2,6 +2,7 @@ package com.batch.Custom.Reader;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.database.AbstractPagingItemReader;
 import org.springframework.util.Assert;
 
@@ -19,8 +20,10 @@ public class QuerydslPagingItemReader<T, ID extends Comparable<? super ID>> exte
     // 엔티티에서 ID를 추출하는 함수
     private final Function<T, ID> idExtractor;
 
-    // 마지막으로 조회한 ID를 저장할 변수, volatile로 스레드 안정성 확보
-    private ID lastId;
+    // 마지막으로 조회한 ID를 저장할 변수, volatile로 스레드 안전성 확보
+    private volatile ID lastId;
+
+    private static final String LAST_ID_KEY = "lastId";
 
     public QuerydslPagingItemReader(
             JPAQueryFactory jpaQueryFactory,
@@ -59,13 +62,25 @@ public class QuerydslPagingItemReader<T, ID extends Comparable<? super ID>> exte
         }
     }
 
-    // 재시작 시 상태를 초기화하기 위해 open 메서드 오버라이드
     @Override
+    @SuppressWarnings("unchecked")
     protected void doOpen() throws Exception {
         super.doOpen();
-        // 초기 lastId를 null로 설정하여 첫 페이지는 id > null 조건 없이 조회되도록 함
-        // (단, 쿼리 함수에서 id가 null일 때를 처리해야 함)
-        // 더 간단하게는 초기값을 0L과 같은 값으로 설정할 수 있음
-        this.lastId = null;
+        // ExecutionContext에 저장된 lastId가 있으면 복원 (배치 재시작 시)
+        ExecutionContext ec = getExecutionContext();
+        if (ec != null && ec.containsKey(LAST_ID_KEY)) {
+            this.lastId = (ID) ec.get(LAST_ID_KEY);
+        } else {
+            this.lastId = null;
+        }
+    }
+
+    @Override
+    public void update(ExecutionContext executionContext) {
+        super.update(executionContext);
+        // 현재 lastId를 ExecutionContext에 저장 (장애 시 재시작 지점으로 사용)
+        if (lastId != null) {
+            executionContext.put(LAST_ID_KEY, lastId);
+        }
     }
 }

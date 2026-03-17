@@ -2,6 +2,19 @@
 
 > Spring Batch의 Offset 기반 페이징 성능 저하를 해결하기 위한 **Keyset(No-Offset) Pagination** 커스텀 ItemReader
 
+## 프로젝트 통합 시 안내
+
+이 코드는 독립적으로 관리되는 Reader 컴포넌트입니다.
+Spring Batch 프로젝트에 통합 시 **패키지 경로와 클래스명을 프로젝트 구조에 맞게 변경**하여 사용합니다.
+
+```
+예시)
+com.project.batch.reader.QuerydslPagingItemReader   -- 핵심 Reader
+com.project.batch.reader.JobPostingReaderFactory     -- Job별 Reader 생성 팩토리 (ItemReader.java)
+```
+
+---
+
 ## 왜 만들었는가
 
 Spring Boot 프레임워크를 도입하면서 기존 배치 로직을 Spring Batch로 이관했습니다. 코드 구조와 가독성은 올라갔지만, **기존 코드 대비 성능 차별점을 찾을 수 없었습니다.**
@@ -123,6 +136,8 @@ public Step myStep(ItemReader<JobPosting> reader,
 | `BiFunction`으로 쿼리 외부 주입 | 비즈니스 조건이 바뀌어도 Reader 수정 불필요 |
 | `Function`으로 ID 추출 분리 | 복합키 등 다양한 ID 전략 지원 |
 | `AbstractPagingItemReader` 상속 | Spring Batch 표준 준수, 기존 Step/Chunk 설정과 호환 |
+| `ExecutionContext` 재시작 지원 | 배치 장애 시 lastId 기반으로 중단 지점부터 재처리 |
+| `volatile` + `CopyOnWriteArrayList` | 멀티스레드 Step 환경에서 스레드 안전성 확보 |
 
 ---
 
