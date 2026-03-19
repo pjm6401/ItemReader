@@ -20,8 +20,8 @@ public class QuerydslPagingItemReader<T, ID extends Comparable<? super ID>> exte
     // 엔티티에서 ID를 추출하는 함수
     private final Function<T, ID> idExtractor;
 
-    // 마지막으로 조회한 ID를 저장할 변수, volatile로 스레드 안전성 확보
-    private volatile ID lastId;
+    // 마지막으로 조회한 ID를 저장할 변수
+    private ID lastId;
 
     private static final String LAST_ID_KEY = "lastId";
 
