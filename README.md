@@ -39,6 +39,18 @@ SELECT * FROM table WHERE id > :lastId ORDER BY id LIMIT 10000
 
 `JpaPagingItemReader`는 offset 계산이 내부에 강하게 결합되어 부분 오버라이드가 불가능하여, `AbstractPagingItemReader`를 직접 상속해 구현했습니다.
 
+### 초기 구현 → QueryDSL 리팩토링
+
+처음에는 QueryDSL에 익숙하지 않았고 ItemReader 내부 구조 파악도 부족한 상태였기 때문에, 기존 JPQL String 기반의 Query 객체를 최소한으로 수정하는 방향으로 구현했습니다.
+
+이후 QueryDSL을 학습하고 `AbstractPagingItemReader`의 구조를 이해한 뒤 현재 형태로 리팩토링했습니다.
+
+**JPQL String 방식의 문제점:**
+
+- 쿼리가 문자열이므로 **컴파일/빌드 시점에 오류가 잡히지 않음** (런타임에서야 발견)
+- 테스트 시 Mock 객체로 검증이 불가능하여 **H2 또는 로컬 DB를 반드시 띄워야** 쿼리 정합성을 확인할 수 있음
+- QueryDSL은 컴파일 타임에 타입 체크가 가능하고, 쿼리 조합이 유연하여 이러한 문제를 해결
+
 ---
 
 ## 성능
